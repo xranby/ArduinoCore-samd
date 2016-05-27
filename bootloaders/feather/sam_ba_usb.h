@@ -20,6 +20,8 @@
 #ifndef CDC_ENUMERATE_H
 #define CDC_ENUMERATE_H
 
+#if (SAM_BA_INTERFACE != SAM_BA_UART_ONLY)
+
 #include <sam.h>
 #include <stdbool.h>
 
@@ -102,6 +104,6 @@ uint32_t USB_SendString(Usb *pUsb, const char* ascii_string, uint8_t length, uin
 
 extern USB_CDC sam_ba_cdc;
 
-
+#endif
 
 #endif // CDC_ENUMERATE_H

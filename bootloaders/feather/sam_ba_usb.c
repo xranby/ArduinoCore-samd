@@ -17,6 +17,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#if (SAM_BA_INTERFACE != SAM_BA_UART_ONLY)
+
 #include <stdint.h>
 #include <string.h>
 #include "sam_ba_usb.h"
@@ -485,4 +487,6 @@ uint32_t USB_SendString(Usb *pUsb, const char* ascii_string, uint8_t length, uin
 
   return USB_Write(pUsb, (const char*)unicode_string, resulting_length, USB_EP_CTRL);
 }
+
+#endif
 #endif // 0

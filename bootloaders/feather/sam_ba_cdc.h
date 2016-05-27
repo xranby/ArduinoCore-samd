@@ -20,6 +20,8 @@
 #ifndef _SAM_BA_USB_CDC_H_
 #define _SAM_BA_USB_CDC_H_
 
+#if (SAM_BA_INTERFACE != SAM_BA_UART_ONLY)
+
 #include <stdint.h>
 #include "sam_ba_usb.h"
 
@@ -87,5 +89,7 @@ uint32_t cdc_read_buf(/*P_USB_CDC pCdc,*/ void* data, uint32_t length);
  * \return number of data read
  */
 uint32_t cdc_read_buf_xmd(/*P_USB_CDC pCdc,*/ void* data, uint32_t length);
+
+#endif
 
 #endif // _SAM_BA_USB_CDC_H_

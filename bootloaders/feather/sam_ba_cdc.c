@@ -17,6 +17,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#if (SAM_BA_INTERFACE != SAM_BA_UART_ONLY)
+
 #include "sam_ba_cdc.h"
 #include "board_driver_usb.h"
 
@@ -100,3 +102,5 @@ uint32_t cdc_read_buf_xmd(/*P_USB_CDC pCdc,*/ void* data, uint32_t length)
 
   return length;
 }
+
+#endif

@@ -20,6 +20,8 @@
 #ifndef _BOARD_DRIVER_USB_H_
 #define _BOARD_DRIVER_USB_H_
 
+#if (SAM_BA_INTERFACE != SAM_BA_UART_ONLY)
+
 #include "sam_ba_cdc.h"
 
 extern UsbDeviceDescriptor usb_endpoint_table[MAX_EP];
@@ -42,4 +44,5 @@ void USB_SendZlp(Usb *pUsb);
 void USB_SetAddress(Usb *pUsb, uint16_t wValue);
 void USB_Configure(Usb *pUsb);
 
+#endif 
 #endif // _BOARD_DRIVER_USB_H_
