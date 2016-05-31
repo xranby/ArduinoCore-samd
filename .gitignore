@@ -1,3 +1,8 @@
 *.bz2
+*~
+.o
+.d
+.elf
+.lss
 
 bootloaders/*/build/
