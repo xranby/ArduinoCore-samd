@@ -22,7 +22,8 @@ ser = serial.Serial(
 	baudrate = args.baud,
 	parity = serial.PARITY_NONE,
 	stopbits = serial.STOPBITS_ONE,
-	bytesize = serial.EIGHTBITS
+	bytesize = serial.EIGHTBITS,
+	timeout = 1
 )
 print ("Port %s opened" % ser.port)
 
@@ -33,7 +34,7 @@ while ser.inWaiting == 0:
 read = ''
 read += ser.read(1)
 if read != 's':
-	print ("No response from device \n")
+	print ("No response from device: "+ read)
 	sys.exit()
 
 # Read the application flash size

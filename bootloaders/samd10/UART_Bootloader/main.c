@@ -26,7 +26,9 @@
 #define BOOT_SERCOM			SERCOM2
 #define BOOT_SERCOM_BAUD	115200
 #define BOOT_PORT			PORTA
-#define BOOT_PIN			14
+#define BOOT_PIN			25
+#define LED_PORT            PORTA
+#define LED_PIN             9
 
 /* SERCOM USART GCLK Frequency */
 #define SERCOM_GCLK		8000000UL
@@ -123,6 +125,8 @@ void nvm_write_buffer(const uint32_t destination_address, const uint8_t *buffer,
 
 int main(void)
 { 
+	PORT->Group[LED_PORT].DIRSET.reg = (1 << LED_PIN);
+
 	/* Check if boot pin is held low - Jump to application if boot pin is high */
 	PORT->Group[BOOT_PORT].OUTSET.reg = (1u << BOOT_PIN);
 	PORT->Group[BOOT_PORT].PINCFG[BOOT_PIN].reg = PORT_PINCFG_INEN | PORT_PINCFG_PULLEN;
@@ -138,6 +142,9 @@ int main(void)
 		/* Jump to application Reset Handler in the application */
 		asm("bx %0"::"r"(app_start_address));
 	}
+
+	PORT->Group[LED_PORT].OUTSET.reg = (1 << LED_PIN);
+	
 	
 	/* Make CPU to run at 8MHz by clearing prescalar bits */ 
     SYSCTRL->OSC8M.bit.PRESC = 0;
