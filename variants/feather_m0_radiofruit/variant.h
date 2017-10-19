@@ -90,16 +90,14 @@ extern "C"
  * Analog pins
  */
 #define PIN_A0               (14ul)
-#define PIN_A1               (15ul)
-#define PIN_A2               (16ul)
-#define PIN_A3               (17ul)
-#define PIN_A4               (18ul)
-#define PIN_A5               (19ul)
-#define PIN_A6               (8ul)
-#define PIN_A7               (9ul)
-#define PIN_A11              (25ul)
-#define PIN_A16              (4ul)
-#define PIN_A17              (3ul)
+#define PIN_A1               (PIN_A0+1)
+#define PIN_A2               (PIN_A0+2)
+#define PIN_A3               (PIN_A0+3)
+#define PIN_A4               (PIN_A0+4)
+#define PIN_A5               (PIN_A0+5)
+#define PIN_A6               (PIN_A0+6)
+#define PIN_A7               (PIN_A0+7)
+
 
 static const uint8_t A0  = PIN_A0 ;
 static const uint8_t A1  = PIN_A1 ;
@@ -109,9 +107,7 @@ static const uint8_t A4  = PIN_A4 ;
 static const uint8_t A5  = PIN_A5 ;
 static const uint8_t A6  = PIN_A6 ;
 static const uint8_t A7  = PIN_A7 ;
-static const uint8_t A11  = PIN_A11 ;
-static const uint8_t A16  = PIN_A16 ;
-static const uint8_t A17  = PIN_A17 ;
+
 
 #define ADC_RESOLUTION		12
 
@@ -134,24 +130,24 @@ static const uint8_t ATN = PIN_ATN;
  * Serial interfaces
  */
 
-// Serial1 on SERCOM5
-#define PIN_SERIAL1_RX       (31ul)
-#define PIN_SERIAL1_TX       (30ul)
-#define PAD_SERIAL1_TX       (UART_TX_PAD_2)
-#define PAD_SERIAL1_RX       (SERCOM_RX_PAD_3)
+// Serial1 on SERCOM0
+#define PIN_SERIAL1_RX       (1ul)
+#define PIN_SERIAL1_TX       (0ul)
+#define PAD_SERIAL1_TX       (UART_TX_PAD_0)
+#define PAD_SERIAL1_RX       (SERCOM_RX_PAD_1)
 
 /*
  * SPI Interfaces
  */
-#define SPI_INTERFACES_COUNT 2
+#define SPI_INTERFACES_COUNT 1
 
-  // "external" SPI, used for sensors, displays, available to user
-#define PIN_SPI_MISO         (2u)
-#define PIN_SPI_MOSI         (22u)
-#define PIN_SPI_SCK          (38u)
-#define PERIPH_SPI           sercom2
-#define PAD_SPI_TX           SPI_PAD_0_SCK_1
-#define PAD_SPI_RX           SERCOM_RX_PAD_2
+// "external" SPI, used for sensors, displays, available to user
+#define PIN_SPI_SCK          (24u)
+#define PIN_SPI_MOSI         (25u)
+#define PIN_SPI_MISO         (26u)
+#define PERIPH_SPI           sercom5
+#define PAD_SPI_TX           SPI_PAD_2_SCK_3
+#define PAD_SPI_RX           SERCOM_RX_PAD_1
 
 static const uint8_t SS	  = PIN_A2 ;	// SERCOM4 last PAD is present on A2 but HW SS isn't used. Set here only for reference.
 static const uint8_t MOSI = PIN_SPI_MOSI ;
@@ -177,10 +173,10 @@ static const uint8_t SCK1  = PIN_SPI_SCK ;
  */
 #define WIRE_INTERFACES_COUNT 1
 
-#define PIN_WIRE_SDA         (20u)
-#define PIN_WIRE_SCL         (21u)
-#define PERIPH_WIRE          sercom3
-#define WIRE_IT_HANDLER      SERCOM3_Handler
+#define PIN_WIRE_SDA         (22u)
+#define PIN_WIRE_SCL         (23u)
+#define PERIPH_WIRE          sercom2
+#define WIRE_IT_HANDLER      SERCOM2_Handler
 
 static const uint8_t SDA = PIN_WIRE_SDA;
 static const uint8_t SCL = PIN_WIRE_SCL;
