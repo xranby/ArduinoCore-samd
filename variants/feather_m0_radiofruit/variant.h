@@ -139,7 +139,7 @@ static const uint8_t ATN = PIN_ATN;
 /*
  * SPI Interfaces
  */
-#define SPI_INTERFACES_COUNT 1
+#define SPI_INTERFACES_COUNT 2
 
 // "external" SPI, used for sensors, displays, available to user
 #define PIN_SPI_SCK          (24u)
@@ -154,19 +154,32 @@ static const uint8_t MOSI = PIN_SPI_MOSI ;
 static const uint8_t MISO = PIN_SPI_MISO ;
 static const uint8_t SCK  = PIN_SPI_SCK ;
 
-  // "internal" SPI, used for AT86RF233 only!
-#define PIN_SPI1_MISO         (47u)
-#define PIN_SPI1_MOSI         (48u)
-#define PIN_SPI1_SCK          (46u)
-#define PIN_SPI1_SEL          (49u)
-#define PERIPH_SPI1           sercom4
-#define PAD_SPI1_TX           SPI_PAD_2_SCK_3
-#define PAD_SPI1_RX           SERCOM_RX_PAD_0
+// "internal" SPI #1, used for SPI FLASH only!
+#define PIN_SPI1_SCK          (2u)
+#define PIN_SPI1_MOSI         (4u)
+#define PIN_SPI1_MISO         (3u)
+#define PERIPH_SPI1           sercom1
+#define PAD_SPI1_TX           SPI_PAD_3_SCK_1
+#define PAD_SPI1_RX           SERCOM_RX_PAD_2
 
-static const uint8_t SS1   = PIN_SPI1_SEL ;
-static const uint8_t MOSI1 = PIN_SPI_MOSI ;
-static const uint8_t MISO1 = PIN_SPI_MISO ;
-static const uint8_t SCK1  = PIN_SPI_SCK ;
+static const uint8_t SS1   = 7;	// CS for flash
+static const uint8_t MOSI1 = PIN_SPI1_MOSI ;
+static const uint8_t MISO1 = PIN_SPI1_MISO ;
+static const uint8_t SCK1  = PIN_SPI1_SCK ;
+
+// "internal" SPI #2, used for AT86RF233 only!
+#define PIN_SPI2_MISO         (47u)
+#define PIN_SPI2_MOSI         (48u)
+#define PIN_SPI2_SCK          (46u)
+#define PIN_SPI2_SEL          (49u)
+#define PERIPH_SPI2           sercom4
+#define PAD_SPI2_TX           SPI_PAD_2_SCK_3
+#define PAD_SPI2_RX           SERCOM_RX_PAD_0
+
+static const uint8_t SS2   = PIN_SPI2_SEL ;
+static const uint8_t MOSI2 = PIN_SPI2_MOSI ;
+static const uint8_t MISO2 = PIN_SPI2_MISO ;
+static const uint8_t SCK2  = PIN_SPI2_SCK ;
 
 /*
  * Wire Interfaces
