@@ -53,12 +53,12 @@ extern "C"
  *----------------------------------------------------------------------------*/
 
 // Number of pins defined in PinDescription array
-#define PINS_COUNT           (51u)
-#define NUM_DIGITAL_PINS     (51u)
+#define PINS_COUNT           (37u)
+#define NUM_DIGITAL_PINS     (37u)
 
 #define NUM_ANALOG_INPUTS    (8u)
 #define NUM_ANALOG_OUTPUTS   (0u)
-#define analogInputToDigitalPin(p)  ((p < 6u) ? (p) + 14u : -1)
+#define analogInputToDigitalPin(p)  ((p < 8u) ? (p) + 14u : -1)
 
 #define digitalPinToPort(P)        ( &(PORT->Group[g_APinDescription[P].ulPort]) )
 #define digitalPinToBitMask(P)     ( 1 << g_APinDescription[P].ulPin )
@@ -79,8 +79,8 @@ extern "C"
 
 // LEDs
 #define PIN_LED_13           (13u)
-#define PIN_LED_RXL          (25u)
-#define PIN_LED_TXL          (26u)
+  //#define PIN_LED_RXL          (25u)
+  //#define PIN_LED_TXL          (26u)
 #define PIN_LED              PIN_LED_13
 #define PIN_LED2             PIN_LED_RXL
 #define PIN_LED3             PIN_LED_TXL
@@ -112,19 +112,14 @@ static const uint8_t A7  = PIN_A7 ;
 #define ADC_RESOLUTION		12
 
 // Other pins
-#define PIN_ATN              (38ul)
-static const uint8_t ATN = PIN_ATN;
-
-
-// Other pins
-#define PIN_ATRF_RESETN   44
-#define PIN_ATRF_CLKM     45
-#define PIN_ATRF_SLPTR    6
-#define PIN_ATRF_SCLK         (46u)
-#define PIN_ATRF_MISO         (47u)
-#define PIN_ATRF_MOSI         (48u)
-#define PIN_ATRF_SEL          (49u)
-#define PIN_ATRF_IRQ          (50u)
+#define PIN_ATRF_RESETN       (27u)
+#define PIN_ATRF_CLKM         (28u)
+#define PIN_ATRF_SCLK         (29u)
+#define PIN_ATRF_MISO         (30u)
+#define PIN_ATRF_MOSI         (31u)
+#define PIN_ATRF_SEL          (32u)
+#define PIN_ATRF_IRQ          (33u)
+#define PIN_ATRF_SLPTR        (34u)
 
 /*
  * Serial interfaces
@@ -139,7 +134,7 @@ static const uint8_t ATN = PIN_ATN;
 /*
  * SPI Interfaces
  */
-#define SPI_INTERFACES_COUNT 2
+#define SPI_INTERFACES_COUNT 3
 
 // "external" SPI, used for sensors, displays, available to user
 #define PIN_SPI_SCK          (24u)
@@ -168,10 +163,10 @@ static const uint8_t MISO1 = PIN_SPI1_MISO ;
 static const uint8_t SCK1  = PIN_SPI1_SCK ;
 
 // "internal" SPI #2, used for AT86RF233 only!
-#define PIN_SPI2_MISO         (47u)
-#define PIN_SPI2_MOSI         (48u)
-#define PIN_SPI2_SCK          (46u)
-#define PIN_SPI2_SEL          (49u)
+#define PIN_SPI2_MISO         PIN_ATRF_MISO
+#define PIN_SPI2_MOSI         PIN_ATRF_MOSI
+#define PIN_SPI2_SCK          PIN_ATRF_SCLK
+#define PIN_SPI2_SEL          PIN_ATRF_SEL
 #define PERIPH_SPI2           sercom4
 #define PAD_SPI2_TX           SPI_PAD_2_SCK_3
 #define PAD_SPI2_RX           SERCOM_RX_PAD_0
@@ -197,9 +192,9 @@ static const uint8_t SCL = PIN_WIRE_SCL;
 /*
  * USB
  */
-#define PIN_USB_HOST_ENABLE (27ul)
-#define PIN_USB_DM          (28ul)
-#define PIN_USB_DP          (29ul)
+#define PIN_USB_DM          (38ul)
+#define PIN_USB_DP          (39ul)
+#define PIN_USB_HOST_ENABLE (8ul)
 
 #ifdef __cplusplus
 }
