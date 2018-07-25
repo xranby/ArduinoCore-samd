@@ -155,6 +155,9 @@ static const uint8_t SCK  = PIN_SPI_SCK ;
 #define SPI_DMA_CHANNEL_RX	(DMAC_CH_NUM-2)
 #define SPI_DMA_CHANNEL_TX	(DMAC_CH_NUM-1)
 
+#define DMAC_RESERVED_CHANNELS ((1UL << SPI_DMA_CHANNEL_RX) | \
+								(1UL << SPI_DMA_CHANNEL_TX))
+
 #define PIN_SPI1_MISO         (36u)
 #define PIN_SPI1_MOSI         (37u)
 #define PIN_SPI1_SCK          (38u)
