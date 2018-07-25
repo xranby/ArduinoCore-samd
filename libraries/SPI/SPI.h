@@ -21,6 +21,7 @@
 #define _SPI_H_INCLUDED
 
 #include <Arduino.h>
+#include "dma.h"
 
 // SPI_HAS_TRANSACTION means SPI has
 //   - beginTransaction()
@@ -91,12 +92,13 @@ class SPISettings {
 
 class SPIClass {
   public:
-  SPIClass(SERCOM *p_sercom, uint8_t uc_pinMISO, uint8_t uc_pinSCK, uint8_t uc_pinMOSI, SercomSpiTXPad, SercomRXPad);
+  SPIClass(SERCOM *p_sercom, uint8_t uc_pinMISO, uint8_t uc_pinSCK, uint8_t uc_pinMOSI, SercomSpiTXPad PadTx, SercomRXPad PadRx, int8_t dmaChannelRx=-1, int8_t dmaChannelTx=-1);
 
 
   byte transfer(uint8_t data);
   uint16_t transfer16(uint16_t data);
   void transfer(void *buf, size_t count);
+  void transfer(void *rx, void *tx, size_t count);
 
   // Transaction Functions
   void usingInterrupt(int interruptNumber);
@@ -122,6 +124,10 @@ class SPIClass {
   uint8_t _uc_pinMiso;
   uint8_t _uc_pinMosi;
   uint8_t _uc_pinSCK;
+  DmacDescriptor *descrx;
+  DmacDescriptor *desctx;
+  uint8_t _dmaChannelRx;
+  uint8_t _dmaChannelTx;
 
   SercomSpiTXPad _padTx;
   SercomRXPad _padRx;

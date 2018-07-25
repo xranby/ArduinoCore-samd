@@ -20,6 +20,7 @@
 #define _SERCOM_CLASS_
 
 #include "sam.h"
+#include "dma.h"
 
 #define SERCOM_FREQ_REF 48000000ul
 
@@ -180,6 +181,7 @@ class SERCOM
 		bool isDataRegisterEmptySPI( void ) ;
 		bool isTransmitCompleteSPI( void ) ;
 		bool isReceiveCompleteSPI( void ) ;
+		void initSPIDMA( uint8_t channelRx, uint8_t channelTx, DmacDescriptor *descrx, DmacDescriptor *desctx ) ;
 
 		/* ========== WIRE ========== */
 		void initSlaveWIRE(uint8_t address) ;
