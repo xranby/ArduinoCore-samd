@@ -270,7 +270,7 @@ uint16_t SPIClass::transfer16(uint16_t data) {
 
 void SPIClass::transfer(void *rx, void *tx, size_t count)
 {
-	if(count > 2 && _dmaChannelRx > -1 && _dmaChannelTx > -1){
+	if(count > 2 && count < 65536 && _dmaChannelRx > -1 && _dmaChannelTx > -1){
 		//use a synchronous DMA transfer
 		descrx->BTCTRL.bit.VALID    = true;
 		descrx->DSTADDR.reg         = (uint32_t)rx + count;
@@ -280,9 +280,17 @@ void SPIClass::transfer(void *rx, void *tx, size_t count)
 		desctx->SRCADDR.reg         = (uint32_t)tx + count;
 		desctx->BTCNT.reg           = count;
 
+#ifdef __SAMD51__
 		DMAC->Channel[_dmaChannelTx].CHCTRLA.bit.ENABLE = 1;
 		if(rx != NULL)
 			DMAC->Channel[_dmaChannelRx].CHCTRLA.bit.ENABLE = 1;
+#else
+		DMAC->CHID.bit.ID    = _dmaChannelTx;
+		DMAC->CHCTRLA.bit.ENABLE = 1;
+
+		DMAC->CHID.bit.ID    = _dmaChannelRx;
+		DMAC->CHCTRLA.bit.ENABLE = 1;
+#endif
 
 		//wait for the transfer to finish
 		while(_writeback[_dmaChannelTx].BTCTRL.bit.VALID || !_p_sercom->isDataRegisterEmptySPI());

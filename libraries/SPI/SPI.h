@@ -126,8 +126,8 @@ class SPIClass {
   uint8_t _uc_pinSCK;
   DmacDescriptor *descrx;
   DmacDescriptor *desctx;
-  uint8_t _dmaChannelRx;
-  uint8_t _dmaChannelTx;
+  int8_t _dmaChannelRx;
+  int8_t _dmaChannelTx;
 
   SercomSpiTXPad _padTx;
   SercomRXPad _padRx;

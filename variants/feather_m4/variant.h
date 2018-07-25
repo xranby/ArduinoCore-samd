@@ -143,6 +143,10 @@ static const uint8_t MOSI = PIN_SPI_MOSI ;
 static const uint8_t MISO = PIN_SPI_MISO ;
 static const uint8_t SCK  = PIN_SPI_SCK ;
 
+#define SPI_HAS_DMA
+#define SPI_DMA_CHANNEL_RX	(DMAC_CH_NUM-2)
+#define SPI_DMA_CHANNEL_TX	(DMAC_CH_NUM-1)
+
 /*
  * Wire Interfaces
  */

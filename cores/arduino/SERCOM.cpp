@@ -391,11 +391,58 @@ void SERCOM::initSPIDMA( uint8_t channelRx, uint8_t channelTx, DmacDescriptor *d
 		DMAC->Channel[channelTx].CHCTRLA.bit.TRIGSRC = SERCOM5_DMAC_ID_TX;
 	}
 #else
-	DMAC->CHID.bit.ID         = _dmaChannelRx;
-	DMAC->CHCTRLB.bit.TRIGSRC = peripheralTrigger;
+	if(sercom == SERCOM0)
+	{
+		DMAC->CHID.bit.ID         = channelRx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM0_DMAC_ID_RX;
 
-	DMAC->CHID.bit.ID         = _dmaChannelTx;
-	DMAC->CHCTRLB.bit.TRIGSRC = peripheralTrigger;
+		DMAC->CHID.bit.ID         = channelTx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM0_DMAC_ID_TX;
+	}
+	else if(sercom == SERCOM1)
+	{
+		DMAC->CHID.bit.ID         = channelRx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM1_DMAC_ID_RX;
+
+		DMAC->CHID.bit.ID         = channelTx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM1_DMAC_ID_TX;
+	}
+	else if(sercom == SERCOM2)
+	{
+		DMAC->CHID.bit.ID         = channelRx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM2_DMAC_ID_RX;
+
+		DMAC->CHID.bit.ID         = channelTx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM2_DMAC_ID_TX;
+	}
+	else if(sercom == SERCOM3)
+	{
+		DMAC->CHID.bit.ID         = channelRx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM3_DMAC_ID_RX;
+
+		DMAC->CHID.bit.ID         = channelTx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM3_DMAC_ID_TX;
+	}
+#if defined(SERCOM4)
+	else if(sercom == SERCOM4)
+	{
+		DMAC->CHID.bit.ID         = channelRx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM4_DMAC_ID_RX;
+
+		DMAC->CHID.bit.ID         = channelTx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM4_DMAC_ID_TX;
+	}
+#endif
+#if defined(SERCOM5)
+	else if(sercom == SERCOM5)
+	{
+		DMAC->CHID.bit.ID         = channelRx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM5_DMAC_ID_RX;
+
+		DMAC->CHID.bit.ID         = channelTx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM5_DMAC_ID_TX;
+	}
+#endif
 #endif
 }
 
