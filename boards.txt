@@ -307,7 +307,40 @@ adafruit_metro_m4.menu.cache.on.build.cache_flags=-DENABLE_CACHE
 adafruit_metro_m4.menu.cache.off=Disabled
 adafruit_metro_m4.menu.cache.off.build.cache_flags=
 
-
+# Adafruit Metro M4 Mega (SAMD51)
+# ------------------------------
+adafruit_metro_m4_mega.name=Adafruit Metro M4 Mega (SAMD51)
+adafruit_metro_m4_mega.vid.0=0x239A
+adafruit_metro_m4_mega.pid.0=0x8020
+adafruit_metro_m4_mega.vid.1=0x239A
+adafruit_metro_m4_mega.pid.1=0x0020
+adafruit_metro_m4_mega.upload.tool=bossac18
+adafruit_metro_m4_mega.upload.protocol=sam-ba
+adafruit_metro_m4_mega.upload.maximum_size=1032192
+adafruit_metro_m4_mega.upload.offset=0x4000
+adafruit_metro_m4_mega.upload.use_1200bps_touch=true
+adafruit_metro_m4_mega.upload.wait_for_upload_port=true
+adafruit_metro_m4_mega.upload.native_usb=true
+adafruit_metro_m4_mega.build.mcu=cortex-m4
+adafruit_metro_m4_mega.build.f_cpu=120000000L
+adafruit_metro_m4_mega.build.usb_product="Adafruit Metro M4 Mega"
+adafruit_metro_m4_mega.build.usb_manufacturer="Adafruit LLC"
+adafruit_metro_m4_mega.build.board=METRO_M4_MEGA
+adafruit_metro_m4_mega.build.core=arduino
+adafruit_metro_m4_mega.build.extra_flags=-D__SAMD51P20A__ -DADAFRUIT_METRO_M4_MEGA -D__SAMD51__ {build.usb_flags} -D__FPU_PRESENT -DARM_MATH_CM4 -mfloat-abi=hard -mfpu=fpv4-sp-d16
+adafruit_metro_m4_mega.build.ldscript=linker_scripts/gcc/flash_with_bootloader.ld
+adafruit_metro_m4_mega.build.openocdscript=openocd_scripts/arduino_zero.cfg
+adafruit_metro_m4_mega.build.variant=metro_m4_mega
+adafruit_metro_m4_mega.build.variant_system_lib=
+adafruit_metro_m4_mega.build.vid=0x239A
+adafruit_metro_m4_mega.build.pid=0x8020
+adafruit_metro_m4_mega.bootloader.tool=openocd
+adafruit_metro_m4_mega.bootloader.file=metroM4/bootloader-metro_m4_mega-v2.0.0-adafruit.5.bin
+adafruit_metro_m4_mega.compiler.arm.cmsis.ldflags="-L{build.variant.path}" -larm_cortexM4lf_math -mfloat-abi=hard -mfpu=fpv4-sp-d16
+adafruit_metro_m4_mega.menu.cache.on=Enabled
+adafruit_metro_m4_mega.menu.cache.on.build.cache_flags=-DENABLE_CACHE
+adafruit_metro_m4_mega.menu.cache.off=Disabled
+adafruit_metro_m4_mega.menu.cache.off.build.cache_flags=
 
 # Adafruit ItsyBitsy M4 (SAMD51)
 # ------------------------------
