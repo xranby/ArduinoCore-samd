@@ -306,6 +306,42 @@ void SPIClass::transfer(void *rx, void *tx, size_t count)
 	}
 }
 
+//returns true if the transfer could be started, false otherwise
+bool SPIClass::transferNonBlocking(void *rx, void *tx, size_t count)
+{
+	if(count < 65536 && _dmaChannelRx > -1 && _dmaChannelTx > -1){
+		//previous transfer has not finished
+		if(_writeback[_dmaChannelTx].BTCTRL.bit.VALID || !_p_sercom->isDataRegisterEmptySPI() ||
+			!_p_sercom->isTransmitCompleteSPI()){
+				return false;
+		}
+		//use a synchronous DMA transfer
+		descrx->BTCTRL.bit.VALID    = true;
+		descrx->DSTADDR.reg         = (uint32_t)rx + count;
+		descrx->BTCNT.reg           = count;
+
+		desctx->BTCTRL.bit.VALID    = true;
+		desctx->SRCADDR.reg         = (uint32_t)tx + count;
+		desctx->BTCNT.reg           = count;
+
+#ifdef __SAMD51__
+		DMAC->Channel[_dmaChannelTx].CHCTRLA.bit.ENABLE = 1;
+		if(rx != NULL)
+			DMAC->Channel[_dmaChannelRx].CHCTRLA.bit.ENABLE = 1;
+#else
+		DMAC->CHID.bit.ID    = _dmaChannelTx;
+		DMAC->CHCTRLA.bit.ENABLE = 1;
+
+		DMAC->CHID.bit.ID    = _dmaChannelRx;
+		DMAC->CHCTRLA.bit.ENABLE = 1;
+#endif
+		return true;
+	}
+	else{
+	  return false;
+	}
+}
+
 void SPIClass::transfer(void *buf, size_t count){
 	transfer(buf, buf, count);
 }

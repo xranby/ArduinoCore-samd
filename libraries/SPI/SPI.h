@@ -99,6 +99,7 @@ class SPIClass {
   uint16_t transfer16(uint16_t data);
   void transfer(void *buf, size_t count);
   void transfer(void *rx, void *tx, size_t count);
+  bool transferNonBlocking(void *rx, void *tx, size_t count);
 
   // Transaction Functions
   void usingInterrupt(int interruptNumber);
