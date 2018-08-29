@@ -55,6 +55,20 @@ typedef enum _EAnalogChannel
   ADC_Channel17=17,
   ADC_Channel18=18,
   ADC_Channel19=19,
+#if defined(__SAMD51__)
+  ADC_Channel20=20,
+  ADC_Channel21=21,
+  ADC_Channel22=22,
+  ADC_Channel23=23,
+  ADC_Channel24=24,
+  ADC_Channel25=25,
+  ADC_Channel26=26,
+  ADC_Channel27=27,
+  ADC_Channel28=28,
+  ADC_Channel29=29,
+  ADC_Channel30=30,
+  ADC_Channel31=31,
+#endif
   DAC_Channel0,
   DAC_Channel1,
 } EAnalogChannel ;
@@ -80,6 +94,22 @@ typedef enum _ETCChannel
   TCC1_CH5 = (1<<8)|(1),
   TCC1_CH6 = (1<<8)|(2),
   TCC1_CH7 = (1<<8)|(3),
+  TCC2_CH0 = (2<<8)|(0),
+  TCC2_CH1 = (2<<8)|(1),
+  TCC2_CH2 = (2<<8)|(2),
+  TCC2_CH3 = (2<<8)|(3),
+  TCC2_CH4 = (2<<8)|(0),
+  TCC2_CH5 = (2<<8)|(1),
+  TCC2_CH6 = (2<<8)|(2),
+  TCC2_CH7 = (2<<8)|(3),
+  TCC3_CH0 = (3<<8)|(0),
+  TCC3_CH1 = (3<<8)|(1),
+  TCC3_CH2 = (3<<8)|(2),
+  TCC3_CH3 = (3<<8)|(3),
+  TCC3_CH4 = (3<<8)|(0),
+  TCC3_CH5 = (3<<8)|(1),
+  TCC3_CH6 = (3<<8)|(2),
+  TCC3_CH7 = (3<<8)|(3),
 } ETCChannel ;
 
 #else

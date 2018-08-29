@@ -337,6 +337,8 @@ uint32_t analogRead(uint32_t pin)
 // hardware support.  These are defined in the appropriate
 // pins_*.c file.  For the rest of the pins, we default
 // to digital output.
+
+//TODO: this needs to be updated to work with the metro m4 mega
 void analogWrite(uint32_t pin, uint32_t value)
 {
   PinDescription pinDesc = g_APinDescription[pin];
