@@ -337,21 +337,113 @@ bool SERCOM::isDataRegisterEmptySPI()
   return sercom->SPI.INTFLAG.bit.DRE;
 }
 
-//bool SERCOM::isTransmitCompleteSPI()
-//{
-//	//TXC : Transmit complete
-//	return sercom->SPI.INTFLAG.bit.TXC;
-//}
-//
-//bool SERCOM::isReceiveCompleteSPI()
-//{
-//	//RXC : Receive complete
-//	return sercom->SPI.INTFLAG.bit.RXC;
-//}
+bool SERCOM::isTransmitCompleteSPI()
+{
+	//TXC : Transmit complete
+	return sercom->SPI.INTFLAG.bit.TXC;
+}
+
+bool SERCOM::isReceiveCompleteSPI()
+{
+	//RXC : Receive complete
+	return sercom->SPI.INTFLAG.bit.RXC;
+}
 
 uint8_t SERCOM::calculateBaudrateSynchronous(uint32_t baudrate)
 {
   return SERCOM_FREQ_REF / (2 * baudrate) - 1;
+}
+
+void SERCOM::initSPIDMA( uint8_t channelRx, uint8_t channelTx, DmacDescriptor *descrx, DmacDescriptor *desctx )
+{
+	descrx->SRCADDR.reg = (uint32_t)(&sercom->SPI.DATA.reg);
+	desctx->DSTADDR.reg = (uint32_t)(&sercom->SPI.DATA.reg);
+
+#ifdef __SAMD51__
+	if(sercom == SERCOM0)
+	{
+		DMAC->Channel[channelRx].CHCTRLA.bit.TRIGSRC = SERCOM0_DMAC_ID_RX;
+		DMAC->Channel[channelTx].CHCTRLA.bit.TRIGSRC = SERCOM0_DMAC_ID_TX;
+	}
+	else if(sercom == SERCOM1)
+	{
+		DMAC->Channel[channelRx].CHCTRLA.bit.TRIGSRC = SERCOM1_DMAC_ID_RX;
+		DMAC->Channel[channelTx].CHCTRLA.bit.TRIGSRC = SERCOM1_DMAC_ID_TX;
+	}
+	else if(sercom == SERCOM2)
+	{
+		DMAC->Channel[channelRx].CHCTRLA.bit.TRIGSRC = SERCOM2_DMAC_ID_RX;
+		DMAC->Channel[channelTx].CHCTRLA.bit.TRIGSRC = SERCOM2_DMAC_ID_TX;
+	}
+	else if(sercom == SERCOM3)
+	{
+		DMAC->Channel[channelRx].CHCTRLA.bit.TRIGSRC = SERCOM3_DMAC_ID_RX;
+		DMAC->Channel[channelTx].CHCTRLA.bit.TRIGSRC = SERCOM3_DMAC_ID_TX;
+	}
+	else if(sercom == SERCOM4)
+	{
+		DMAC->Channel[channelRx].CHCTRLA.bit.TRIGSRC = SERCOM4_DMAC_ID_RX;
+		DMAC->Channel[channelTx].CHCTRLA.bit.TRIGSRC = SERCOM4_DMAC_ID_TX;
+	}
+	else if(sercom == SERCOM5)
+	{
+		DMAC->Channel[channelRx].CHCTRLA.bit.TRIGSRC = SERCOM5_DMAC_ID_RX;
+		DMAC->Channel[channelTx].CHCTRLA.bit.TRIGSRC = SERCOM5_DMAC_ID_TX;
+	}
+#else
+	if(sercom == SERCOM0)
+	{
+		DMAC->CHID.bit.ID         = channelRx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM0_DMAC_ID_RX;
+
+		DMAC->CHID.bit.ID         = channelTx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM0_DMAC_ID_TX;
+	}
+	else if(sercom == SERCOM1)
+	{
+		DMAC->CHID.bit.ID         = channelRx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM1_DMAC_ID_RX;
+
+		DMAC->CHID.bit.ID         = channelTx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM1_DMAC_ID_TX;
+	}
+	else if(sercom == SERCOM2)
+	{
+		DMAC->CHID.bit.ID         = channelRx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM2_DMAC_ID_RX;
+
+		DMAC->CHID.bit.ID         = channelTx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM2_DMAC_ID_TX;
+	}
+	else if(sercom == SERCOM3)
+	{
+		DMAC->CHID.bit.ID         = channelRx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM3_DMAC_ID_RX;
+
+		DMAC->CHID.bit.ID         = channelTx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM3_DMAC_ID_TX;
+	}
+#if defined(SERCOM4)
+	else if(sercom == SERCOM4)
+	{
+		DMAC->CHID.bit.ID         = channelRx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM4_DMAC_ID_RX;
+
+		DMAC->CHID.bit.ID         = channelTx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM4_DMAC_ID_TX;
+	}
+#endif
+#if defined(SERCOM5)
+	else if(sercom == SERCOM5)
+	{
+		DMAC->CHID.bit.ID         = channelRx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM5_DMAC_ID_RX;
+
+		DMAC->CHID.bit.ID         = channelTx;
+		DMAC->CHCTRLB.bit.TRIGSRC = SERCOM5_DMAC_ID_TX;
+	}
+#endif
+#endif
 }
 
 
@@ -374,7 +466,7 @@ void SERCOM::enableWIRE()
 {
   // I2C Master and Slave modes share the ENABLE bit function.
 
-  // Enable the I²C master mode
+  // Enable the Iï¿½C master mode
   sercom->I2CM.CTRLA.bit.ENABLE = 1 ;
 
   while ( sercom->I2CM.SYNCBUSY.bit.ENABLE != 0 )
@@ -395,7 +487,7 @@ void SERCOM::disableWIRE()
 {
   // I2C Master and Slave modes share the ENABLE bit function.
 
-  // Enable the I²C master mode
+  // Enable the Iï¿½C master mode
   sercom->I2CM.CTRLA.bit.ENABLE = 0 ;
 
   while ( sercom->I2CM.SYNCBUSY.bit.ENABLE != 0 )

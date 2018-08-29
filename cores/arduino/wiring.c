@@ -62,6 +62,12 @@ void calibrateADC()
  *   - Watchdog is disabled by default, unless someone plays with NVM User page
  *   - During reset, all PORT lines are configured as inputs with input buffers, output buffers and pull disabled.
  */
+
+// DMA descriptor list entry point (and writeback buffer) per channel
+__attribute__((__aligned__(16))) DmacDescriptor // 128 bit alignment
+  _descriptor[DMAC_CH_NUM] SECTION_DMAC_DESCRIPTOR,
+  _writeback[DMAC_CH_NUM]  SECTION_DMAC_DESCRIPTOR;
+
 void init( void )
 {
   // Set Systick to 1ms interval, common to all Cortex-M variants
@@ -185,6 +191,26 @@ void init( void )
 
 
 #endif //SAMD51
+
+//init DMAC
+#if (SAML21) || (SAML22) || (SAMC20) || (SAMC21)
+	PM->AHBMASK.bit.DMAC_       = 1;
+#elif defined(__SAMD51__)
+	MCLK->AHBMASK.bit.DMAC_     = 1; // Initialize DMA clocks
+#else
+	PM->AHBMASK.bit.DMAC_       = 1; // Initialize DMA clocks
+	PM->APBBMASK.bit.DMAC_      = 1;
+#endif
+	DMAC->CTRL.bit.DMAENABLE    = 0; // Disable DMA controller
+	DMAC->CTRL.bit.SWRST        = 1; // Perform software reset
+
+	// Initialize descriptor list addresses
+	DMAC->BASEADDR.bit.BASEADDR = (uint32_t)_descriptor;
+	DMAC->WRBADDR.bit.WRBADDR   = (uint32_t)_writeback;
+	memset(_descriptor, 0, sizeof(_descriptor));
+	memset(_writeback , 0, sizeof(_writeback));
+
+	DMAC->CTRL.reg = DMAC_CTRL_DMAENABLE | DMAC_CTRL_LVLEN(0xF);
 }
 
 #ifdef __cplusplus
