@@ -110,6 +110,31 @@ typedef enum _ETCChannel
   TCC3_CH5 = (3<<8)|(1),
   TCC3_CH6 = (3<<8)|(2),
   TCC3_CH7 = (3<<8)|(3),
+  TCC4_CH0 = (4<<8)|(0),
+  TCC4_CH1 = (4<<8)|(1),
+  TCC4_CH2 = (4<<8)|(2),
+  TCC4_CH3 = (4<<8)|(3),
+  TCC4_CH4 = (4<<8)|(0),
+  TCC4_CH5 = (4<<8)|(1),
+  TCC4_CH6 = (4<<8)|(2),
+  TCC4_CH7 = (4<<8)|(3),
+
+  TC0_CH0 = (5<<8)|(0),
+  TC0_CH1 = (5<<8)|(1),
+  TC1_CH0 = (6<<8)|(0),
+  TC1_CH1 = (6<<8)|(1),
+  TC2_CH0 = (7<<8)|(0),
+  TC2_CH1 = (7<<8)|(1),
+  TC3_CH0 = (8<<8)|(0),
+  TC3_CH1 = (8<<8)|(1),
+  TC4_CH0 = (9<<8)|(0),
+  TC4_CH1 = (9<<8)|(1),
+  TC5_CH0 = (10<<8)|(0),
+  TC5_CH1 = (10<<8)|(1),
+  TC6_CH0 = (11<<8)|(0),
+  TC6_CH1 = (11<<8)|(1),
+  TC7_CH0 = (12<<8)|(0),
+  TC7_CH1 = (12<<8)|(1),
 } ETCChannel ;
 
 #else
@@ -170,6 +195,47 @@ extern const void* g_apTCInstances[TCC_INST_NUM+TC_INST_NUM] ;
     PWM1_CH5=TCC1_CH5,
     PWM1_CH6=TCC1_CH6,
     PWM1_CH7=TCC1_CH7,
+    PWM2_CH0=TCC2_CH0,
+    PWM2_CH1=TCC2_CH1,
+    PWM2_CH2=TCC2_CH2,
+    PWM2_CH3=TCC2_CH3,
+    PWM2_CH4=TCC2_CH4,
+    PWM2_CH5=TCC2_CH5,
+    PWM2_CH6=TCC2_CH6,
+    PWM2_CH7=TCC2_CH7,
+    PWM3_CH0=TCC3_CH0,
+    PWM3_CH1=TCC3_CH1,
+    PWM3_CH2=TCC3_CH2,
+    PWM3_CH3=TCC3_CH3,
+    PWM3_CH4=TCC3_CH4,
+    PWM3_CH5=TCC3_CH5,
+    PWM3_CH6=TCC3_CH6,
+    PWM3_CH7=TCC3_CH7,
+    PWM4_CH0=TCC4_CH0,
+    PWM4_CH1=TCC4_CH1,
+    PWM4_CH2=TCC4_CH2,
+    PWM4_CH3=TCC4_CH3,
+    PWM4_CH4=TCC4_CH4,
+    PWM4_CH5=TCC4_CH5,
+    PWM4_CH6=TCC4_CH6,
+    PWM4_CH7=TCC4_CH7,
+
+    PWM5_CH0=TC0_CH0,
+    PWM5_CH1=TC0_CH1,
+    PWM6_CH0=TC1_CH0,
+    PWM6_CH1=TC1_CH1,
+    PWM7_CH0=TC2_CH0,
+    PWM7_CH1=TC2_CH1,
+    PWM8_CH0=TC3_CH0,
+    PWM8_CH1=TC3_CH1,
+    PWM9_CH0=TC4_CH0,
+    PWM9_CH1=TC4_CH1,
+    PWM10_CH0=TC5_CH0,
+    PWM10_CH1=TC5_CH1,
+    PWM11_CH0=TC6_CH0,
+    PWM11_CH1=TC6_CH1,
+    PWM12_CH0=TC7_CH0,
+    PWM12_CH1=TC7_CH1,
   } EPWMChannel ;
 
 #else //end __SAMD51J19A__
@@ -216,6 +282,7 @@ typedef enum _EPortType
   PORTA=0,
   PORTB=1,
   PORTC=2,
+  PORTD=3,
 } EPortType ;
 
 #define PIN_NOT_A_PIN (UINT_MAX)
@@ -244,6 +311,34 @@ typedef enum
   EXTERNAL_INT_NONE = NOT_AN_INTERRUPT,
 } EExt_Interrupts ;
 
+#if defined(__SAMD51__)
+
+typedef enum _EPioType
+{
+  PIO_NOT_A_PIN=-1,     /* Not under control of a peripheral. */
+  PIO_EXTINT=0,         /* The pin is controlled by the associated signal of peripheral A. */
+  PIO_ANALOG,           /* The pin is controlled by the associated signal of peripheral B. */
+  PIO_SERCOM,           /* The pin is controlled by the associated signal of peripheral C. */
+  PIO_SERCOM_ALT,       /* The pin is controlled by the associated signal of peripheral D. */
+  PIO_TC,            /* The pin is controlled by the associated signal of peripheral E. */
+  PIO_TCC,        /* The pin is controlled by the associated signal of peripheral F. */
+  PIO_TCC_PDEC,			/* The pin is controlled by the associated signal of peripheral G. */
+  PIO_COM,             /* The pin is controlled by the associated signal of peripheral H. */
+  PIO_SDHC,             /* The pin is controlled by the associated signal of peripheral I. */
+  PIO_I2S,              /* The pin is controlled by the associated signal of peripheral J. */
+  PIO_PCC,              /* The pin is controlled by the associated signal of peripheral K. */
+  PIO_GMAC,             /* The pin is controlled by the associated signal of peripheral L. */
+  PIO_AC_CLK,           /* The pin is controlled by the associated signal of peripheral M. */
+  PIO_CCL,              /* The pin is controlled by the associated signal of peripheral N. */
+
+  PIO_DIGITAL,          /* The pin is controlled by PORT. */
+  PIO_INPUT,            /* The pin is controlled by PORT and is an input. */
+  PIO_INPUT_PULLUP,     /* The pin is controlled by PORT and is an input with internal pull-up resistor enabled. */
+  PIO_OUTPUT,           /* The pin is controlled by PORT and is an output. */
+
+} EPioType ;
+
+#else
 //A    B                 C       D          E      F   G   H
 //EIC REF ADC AC PTC DAC SERCOM SERCOM_ALT TC/TCC TCC COM AC/GCLK
 
@@ -256,19 +351,9 @@ typedef enum _EPioType
   PIO_SERCOM_ALT,       /* The pin is controlled by the associated signal of peripheral D. */
   PIO_TIMER,            /* The pin is controlled by the associated signal of peripheral E. */
   PIO_TIMER_ALT,        /* The pin is controlled by the associated signal of peripheral F. */
-#if defined(__SAMD51__)
-  PIO_TCC_PDEC,			/* The pin is controlled by the associated signal of peripheral G. */
-  PIO_COM,             /* The pin is controlled by the associated signal of peripheral H. */
-  PIO_SDHC,             /* The pin is controlled by the associated signal of peripheral I. */
-  PIO_I2S,              /* The pin is controlled by the associated signal of peripheral J. */
-  PIO_PCC,              /* The pin is controlled by the associated signal of peripheral K. */
-  PIO_GMAC,             /* The pin is controlled by the associated signal of peripheral L. */
-  PIO_AC_CLK,           /* The pin is controlled by the associated signal of peripheral M. */
-  PIO_CCL,              /* The pin is controlled by the associated signal of peripheral N. */
-#else
   PIO_COM,              /* The pin is controlled by the associated signal of peripheral G. */
   PIO_AC_CLK,           /* The pin is controlled by the associated signal of peripheral H. */
-#endif
+
   PIO_DIGITAL,          /* The pin is controlled by PORT. */
   PIO_INPUT,            /* The pin is controlled by PORT and is an input. */
   PIO_INPUT_PULLUP,     /* The pin is controlled by PORT and is an input with internal pull-up resistor enabled. */
@@ -277,6 +362,7 @@ typedef enum _EPioType
   PIO_PWM=PIO_TIMER,
   PIO_PWM_ALT=PIO_TIMER_ALT,
 } EPioType ;
+#endif
 
 /**
  * Pin Attributes to be OR-ed
@@ -289,6 +375,12 @@ typedef enum _EPioType
 #define PIN_ATTR_TIMER         (1UL<<4)
 #define PIN_ATTR_TIMER_ALT     (1UL<<5)
 #define PIN_ATTR_EXTINT        (1UL<<6)
+
+#if defined(__SAMD51__)
+#define PIN_ATTR_PWM_TC        (1UL<<7)
+#define PIN_ATTR_PWM_TCC       (1UL<<8)
+#define PIN_ATTR_PWM_TCC_PDEC   (1UL<<9)
+#endif
 
 /* Types used for the table below */
 typedef struct _PinDescription

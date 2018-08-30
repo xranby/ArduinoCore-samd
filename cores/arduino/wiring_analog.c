@@ -253,6 +253,8 @@ uint32_t analogRead(uint32_t pin)
 #endif
 
 #if defined(__SAMD51__)
+	//TODO: This should use ADC1 depending on the channel
+
   while( ADC0->SYNCBUSY.reg & ADC_SYNCBUSY_INPUTCTRL ); //wait for sync
   ADC0->INPUTCTRL.bit.MUXPOS = g_APinDescription[pin].ulADCChannelNumber; // Selection for the positive ADC input
   
@@ -424,32 +426,24 @@ void analogWrite(uint32_t pin, uint32_t value)
 	  }
 #endif
 
-  if ((attr & PIN_ATTR_PWM) == PIN_ATTR_PWM)
+#if defined(__SAMD51__)
+	if ((attr & PIN_ATTR_PWM_TC) == PIN_ATTR_PWM_TC ||
+			(attr & PIN_ATTR_PWM_TC) == PIN_ATTR_PWM_TCC ||
+			(attr & PIN_ATTR_PWM_TC) == PIN_ATTR_PWM_TCC_PDEC )
   {
 
     uint32_t tcNum = GetTCNumber(pinDesc.ulPWMChannel);
     uint8_t tcChannel = GetTCChannelNumber(pinDesc.ulPWMChannel);
     static bool tcEnabled[TCC_INST_NUM+TC_INST_NUM];
 
-    if (attr & PIN_ATTR_TIMER) {
-      #if !(ARDUINO_SAMD_VARIANT_COMPLIANCE >= 10603)
-      // Compatibility for cores based on SAMD core <=1.6.2
-      if (pinDesc.ulPinType == PIO_TIMER_ALT) {
-        pinPeripheral(pin, PIO_TIMER_ALT);
-      } else
-      #endif
-      {
-
-#if defined(__SAMD51__)
-          //on SAMD51 we are only using TCC for timers
-          pinPeripheral(pin, PIO_TCC_PDEC);
-#else
-        pinPeripheral(pin, PIO_TIMER);
-#endif
-      }
-    } else if ((attr & PIN_ATTR_TIMER_ALT) == PIN_ATTR_TIMER_ALT){
-        //this is on an alt timer
-        pinPeripheral(pin, PIO_TIMER_ALT);
+    if ((attr & PIN_ATTR_PWM_TC) == PIN_ATTR_PWM_TC) {
+        pinPeripheral(pin, PIO_TC);
+    } else if ((attr & PIN_ATTR_PWM_TCC) == PIN_ATTR_PWM_TCC){
+        //this is on a TCC
+        pinPeripheral(pin, PIO_TCC);
+    } else if ((attr & PIN_ATTR_PWM_TCC_PDEC) == PIN_ATTR_PWM_TCC_PDEC){
+        //this is on a TCC_PDEC
+        pinPeripheral(pin, PIO_TCC_PDEC);
     }
     else{
         return;
@@ -458,7 +452,6 @@ void analogWrite(uint32_t pin, uint32_t value)
     if (!tcEnabled[tcNum]) {
       tcEnabled[tcNum] = true;
 
-#if defined(__SAMD51__)
 	uint32_t GCLK_CLKCTRL_IDs[] = {
 		TCC0_GCLK_ID,
 		TCC1_GCLK_ID,
@@ -466,7 +459,30 @@ void analogWrite(uint32_t pin, uint32_t value)
 	#if defined(TCC3)
 		TCC3_GCLK_ID,
 		TCC4_GCLK_ID,
+	#endif
+	#if defined(TC0)
+		TC0_GCLK_ID,
+	#endif
+	#if defined(TC1)
+		TC1_GCLK_ID,
+	#endif
+	#if defined(TC2)
+		TC2_GCLK_ID,
+	#endif
+	#if defined(TC3)
+		TC3_GCLK_ID,
+	#endif
+	#if defined(TC4)
+		TC4_GCLK_ID,
+	#endif
+	#if defined(TC5)
 		TC5_GCLK_ID,
+	#endif
+	#if defined(TC6)
+		TC6_GCLK_ID,
+	#endif
+	#if defined(TC7)
+		TC7_GCLK_ID,
 	#endif
 	};
 	
@@ -543,6 +559,35 @@ void analogWrite(uint32_t pin, uint32_t value)
 }
 	  
 #else
+	if ((attr & PIN_ATTR_PWM) == PIN_ATTR_PWM)
+  {
+
+    uint32_t tcNum = GetTCNumber(pinDesc.ulPWMChannel);
+    uint8_t tcChannel = GetTCChannelNumber(pinDesc.ulPWMChannel);
+    static bool tcEnabled[TCC_INST_NUM+TC_INST_NUM];
+
+    if (attr & PIN_ATTR_TIMER) {
+      #if !(ARDUINO_SAMD_VARIANT_COMPLIANCE >= 10603)
+      // Compatibility for cores based on SAMD core <=1.6.2
+      if (pinDesc.ulPinType == PIO_TIMER_ALT) {
+        pinPeripheral(pin, PIO_TIMER_ALT);
+      } else
+      #endif
+      {
+
+        pinPeripheral(pin, PIO_TIMER);
+      }
+    } else if ((attr & PIN_ATTR_TIMER_ALT) == PIN_ATTR_TIMER_ALT){
+        //this is on an alt timer
+        pinPeripheral(pin, PIO_TIMER_ALT);
+    }
+    else{
+        return;
+    }
+
+    if (!tcEnabled[tcNum]) {
+      tcEnabled[tcNum] = true;
+
       uint16_t GCLK_CLKCTRL_IDs[] = {
         GCLK_CLKCTRL_ID(GCM_TCC0_TCC1), // TCC0
         GCLK_CLKCTRL_ID(GCM_TCC0_TCC1), // TCC1
