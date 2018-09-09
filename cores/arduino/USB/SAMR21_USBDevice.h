@@ -27,4 +27,4 @@
 
 #include "SAMD21_USBDevice.h"
 
-typedef USBDevice_SAMD21G18x USBDevice_SAMR21G18x;
+typedef class USBDevice_SAMD21G18x USBDevice_SAMR21G18x;
