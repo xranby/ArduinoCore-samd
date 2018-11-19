@@ -69,8 +69,8 @@ const PinDescription g_APinDescription[]=
   // 22..29
   { PORTD,  12, PIO_DIGITAL, PIN_ATTR_DIGITAL, No_ADC_Channel, NOT_ON_PWM, NOT_ON_TIMER,  EXTERNAL_INT_7 },
   { PORTA,  15, PIO_DIGITAL, PIN_ATTR_PWM_F, No_ADC_Channel, TCC2_CH1, NOT_ON_TIMER,  EXTERNAL_INT_15 },
-  { PORTC,  17, PIO_DIGITAL, PIN_ATTR_PWM_F, No_ADC_Channel, TCC0_CH1, NOT_ON_TIMER,  EXTERNAL_INT_1 }, // SCL_1
-  { PORTC,  16, PIO_DIGITAL, PIN_ATTR_PWM_F, No_ADC_Channel, TCC0_CH0, NOT_ON_TIMER,  EXTERNAL_INT_0 }, // SDA_1
+  { PORTC,  17, PIO_SERCOM, PIN_ATTR_PWM_F, No_ADC_Channel, TCC0_CH1, NOT_ON_TIMER,  EXTERNAL_INT_1 }, // SCL_1
+  { PORTC,  16, PIO_SERCOM, PIN_ATTR_PWM_F, No_ADC_Channel, TCC0_CH0, NOT_ON_TIMER,  EXTERNAL_INT_0 }, // SDA_1
   { PORTA,  12, PIO_DIGITAL, PIN_ATTR_PWM_E, No_ADC_Channel, TC2_CH0, TC2_CH0,  EXTERNAL_INT_12 }, // DEN1
   { PORTA,  13, PIO_DIGITAL, PIN_ATTR_PWM_E, No_ADC_Channel, TC2_CH1, TC2_CH1,  EXTERNAL_INT_13 }, // DEN2
   { PORTA,  14, PIO_DIGITAL, PIN_ATTR_PWM_F, No_ADC_Channel, TCC2_CH0, NOT_ON_TIMER,  EXTERNAL_INT_14 }, // CLK
@@ -193,21 +193,21 @@ SERCOM sercom5( SERCOM5 ) ;
 SERCOM sercom6( SERCOM6 ) ;
 SERCOM sercom7( SERCOM7 ) ;
 
-Uart Serial1( &sercom3, PIN_SERIAL1_RX, PIN_SERIAL1_TX, PAD_SERIAL1_RX, PAD_SERIAL1_TX ) ;
+Uart Serial1( &sercom0, PIN_SERIAL1_RX, PIN_SERIAL1_TX, PAD_SERIAL1_RX, PAD_SERIAL1_TX ) ;
 
-void SERCOM3_0_Handler()
+void SERCOM0_0_Handler()
 {
   Serial1.IrqHandler();
 }
-void SERCOM3_1_Handler()
+void SERCOM0_1_Handler()
 {
   Serial1.IrqHandler();
 }
-void SERCOM3_2_Handler()
+void SERCOM0_2_Handler()
 {
   Serial1.IrqHandler();
 }
-void SERCOM3_3_Handler()
+void SERCOM0_3_Handler()
 {
   Serial1.IrqHandler();
 }

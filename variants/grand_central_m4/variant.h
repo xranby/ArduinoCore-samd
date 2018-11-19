@@ -57,9 +57,9 @@ extern "C"
  *----------------------------------------------------------------------------*/
 
 // Number of pins defined in PinDescription array
-#define PINS_COUNT           (26u)
-#define NUM_DIGITAL_PINS     (20u)
-#define NUM_ANALOG_INPUTS    (8u)
+#define PINS_COUNT           (94u)
+#define NUM_DIGITAL_PINS     (53u)
+#define NUM_ANALOG_INPUTS    (16u)
 #define NUM_ANALOG_OUTPUTS   (2u)
 #define analogInputToDigitalPin(p)  ((p < 6u) ? (p) + 14u : -1)
 
@@ -150,36 +150,75 @@ static const uint8_t ATN = PIN_ATN;
 #define PAD_SERIAL1_TX       (UART_TX_PAD_0)
 #define PAD_SERIAL1_RX       (SERCOM_RX_PAD_1)
 
+// Serial2
+#define PIN_SERIAL2_RX       (72ul)
+#define PIN_SERIAL2_TX       (71ul)
+#define PAD_SERIAL2_TX       (UART_TX_PAD_0)
+#define PAD_SERIAL2_RX       (SERCOM_RX_PAD_1)
+#define SERCOM_SERIAL2		 sercom4
+
+// Serial3
+#define PIN_SERIAL3_RX       (70ul)
+#define PIN_SERIAL3_TX       (69ul)
+#define PAD_SERIAL3_TX       (UART_TX_PAD_0)
+#define PAD_SERIAL3_RX       (SERCOM_RX_PAD_1)
+#define SERCOM_SERIAL3		 sercom1
+
+// Serial4
+#define PIN_SERIAL4_RX       (68ul)
+#define PIN_SERIAL4_TX       (67ul)
+#define PAD_SERIAL4_TX       (UART_TX_PAD_0)
+#define PAD_SERIAL4_RX       (SERCOM_RX_PAD_1)
+#define SERCOM_SERIAL4		 sercom5
 /*
  * SPI Interfaces
  */
-#define SPI_INTERFACES_COUNT 1
+#define SPI_INTERFACES_COUNT 2
 
-#define PIN_SPI_MISO         (24u)
-#define PIN_SPI_MOSI         (26u)
-#define PIN_SPI_SCK          (25u)
-#define PERIPH_SPI           sercom2
+#define PIN_SPI_MISO         (64u)
+#define PIN_SPI_MOSI         (66u)
+#define PIN_SPI_SCK          (65u)
+#define PERIPH_SPI           sercom7
 #define PAD_SPI_TX           SPI_PAD_0_SCK_1
 #define PAD_SPI_RX           SERCOM_RX_PAD_2
 
-static const uint8_t SS	  = PIN_A2 ;	
+static const uint8_t SS	  = (53u) ;
 static const uint8_t MOSI = PIN_SPI_MOSI ;
 static const uint8_t MISO = PIN_SPI_MISO ;
 static const uint8_t SCK  = PIN_SPI_SCK ;
 
+#define PIN_SPI1_MISO         (80u)
+#define PIN_SPI1_MOSI         (82u)
+#define PIN_SPI1_SCK          (81u)
+#define PERIPH_SPI1           sercom2
+#define PAD_SPI1_TX           SPI_PAD_0_SCK_1
+#define PAD_SPI1_RX           SERCOM_RX_PAD_2
+
+static const uint8_t SS1	  = (83u) ;
+static const uint8_t MOSI1 = PIN_SPI1_MOSI ;
+static const uint8_t MISO1 = PIN_SPI1_MISO ;
+static const uint8_t SCK1  = PIN_SPI1_SCK ;
 
 /*
  * Wire Interfaces
  */
-#define WIRE_INTERFACES_COUNT 1
+#define WIRE_INTERFACES_COUNT 2
 
 #define PIN_WIRE_SDA         (62u)
 #define PIN_WIRE_SCL         (63u)
-#define PERIPH_WIRE          sercom5
-#define WIRE_IT_HANDLER      SERCOM5_Handler
+#define PERIPH_WIRE          sercom3
+#define WIRE_IT_HANDLER      SERCOM3_Handler
 
 static const uint8_t SDA = PIN_WIRE_SDA;
 static const uint8_t SCL = PIN_WIRE_SCL;
+
+#define PIN_WIRE1_SDA         (25u)
+#define PIN_WIRE1_SCL         (24u)
+#define PERIPH_WIRE1          sercom6
+#define WIRE1_IT_HANDLER      SERCOM6_Handler
+
+static const uint8_t SDA1 = PIN_WIRE1_SDA;
+static const uint8_t SCL1 = PIN_WIRE1_SCL;
 
 /*
  * USB
@@ -203,27 +242,32 @@ static const uint8_t SCL = PIN_WIRE_SCL;
 #define PIN_I2S_MCK			(2u)
 
 //QSPI Pins
-#define PIN_QSPI_SCK	(41u)
-#define PIN_QSPI_CS	(42u)
-#define PIN_QSPI_IO0	(43u)
-#define PIN_QSPI_IO1	(44u)
-#define PIN_QSPI_IO2	(45u)
-#define PIN_QSPI_IO3	(46u)
+#define PIN_QSPI_SCK	(89u)
+#define PIN_QSPI_CS		(90u)
+#define PIN_QSPI_IO0	(91u)
+#define PIN_QSPI_IO1	(92u)
+#define PIN_QSPI_IO2	(93u)
+#define PIN_QSPI_IO3	(94u)
 
 //PCC Pins
-#define PIN_PCC_DEN1    (PIN_SPI_MOSI)
-#define PIN_PCC_DEN2    (PIN_SPI_SCK)
-#define PIN_PCC_CLK     (PIN_SPI_MISO)
-#define PIN_PCC_D0      (13u)
-#define PIN_PCC_D1      (12u)
-#define PIN_PCC_D2      (10u)
-#define PIN_PCC_D3      (11u)
-#define PIN_PCC_D4      (9u)
-#define PIN_PCC_D5      (8u)
-#define PIN_PCC_D6      (1u)
-#define PIN_PCC_D7      (0u)
-#define PIN_PCC_D8      (5u)
-#define PIN_PCC_D9      (6u)
+#define PIN_PCC_DEN1    (26u)
+#define PIN_PCC_DEN2    (27u)
+#define PIN_PCC_CLK     (28u)
+#define PIN_PCC_XCLK	(29u)
+#define PIN_PCC_D0      (37u)
+#define PIN_PCC_D1      (36u)
+#define PIN_PCC_D2      (35u)
+#define PIN_PCC_D3      (34u)
+#define PIN_PCC_D4      (33u)
+#define PIN_PCC_D5      (32u)
+#define PIN_PCC_D6      (31u)
+#define PIN_PCC_D7      (30u)
+#define PIN_PCC_D8      (39u)
+#define PIN_PCC_D9      (38u)
+#define PIN_PCC_D10     (41u)
+#define PIN_PCC_D11     (40u)
+#define PIN_PCC_D12     (43u)
+#define PIN_PCC_D13     (42u)
 
 //TODO: meaningful value for this
 #define VARIANT_QSPI_BAUD_DEFAULT 5000000
@@ -248,6 +292,8 @@ extern SERCOM sercom2;
 extern SERCOM sercom3;
 extern SERCOM sercom4;
 extern SERCOM sercom5;
+extern SERCOM sercom6;
+extern SERCOM sercom7;
 
 extern Uart Serial1;
 
