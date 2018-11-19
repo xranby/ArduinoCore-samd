@@ -82,12 +82,13 @@ extern "C"
 
 // LEDs
 #define PIN_LED_13           (13u)
-#define PIN_LED_RXL          (27u)
-#define PIN_LED_TXL          (28u)
+#define PIN_LED_RXL          (75u)
+#define PIN_LED_TXL          (76u)
 #define PIN_LED              PIN_LED_13
 #define PIN_LED2             PIN_LED_RXL
 #define PIN_LED3             PIN_LED_TXL
 #define LED_BUILTIN          PIN_LED_13
+#define PIN_NEOPIXEL		 (88u)
 
 /*
  * Analog pins
@@ -190,14 +191,22 @@ static const uint8_t SCK  = PIN_SPI_SCK ;
 #define PIN_SPI1_MISO         (80u)
 #define PIN_SPI1_MOSI         (82u)
 #define PIN_SPI1_SCK          (81u)
+#define PIN_SPI1_SS           (83u)
 #define PERIPH_SPI1           sercom2
 #define PAD_SPI1_TX           SPI_PAD_0_SCK_1
-#define PAD_SPI1_RX           SERCOM_RX_PAD_2
+#define PAD_SPI1_RX           SERCOM_RX_PAD_3
 
-static const uint8_t SS1	  = (83u) ;
+static const uint8_t SS1	  = PIN_SPI1_SS ;
 static const uint8_t MOSI1 = PIN_SPI1_MOSI ;
 static const uint8_t MISO1 = PIN_SPI1_MISO ;
 static const uint8_t SCK1  = PIN_SPI1_SCK ;
+
+// Needed for SD library
+#define SDCARD_SPI      SPI1
+#define SDCARD_MISO_PIN PIN_SPI1_MISO
+#define SDCARD_MOSI_PIN PIN_SPI1_MOSI
+#define SDCARD_SCK_PIN  PIN_SPI1_SCK
+#define SDCARD_SS_PIN   PIN_SPI1_SS
 
 /*
  * Wire Interfaces
@@ -235,11 +244,11 @@ static const uint8_t SCL1 = PIN_WIRE1_SCL;
 #define I2S_DEVICE          0
 #define I2S_CLOCK_GENERATOR 3
 
-#define PIN_I2S_SDO          (8u)
-#define PIN_I2S_SDI          (1u)
-#define PIN_I2S_SCK         (3u)
-#define PIN_I2S_FS          (9u)
-#define PIN_I2S_MCK			(2u)
+#define PIN_I2S_SDO         (32u)
+#define PIN_I2S_SDI         (31u)
+#define PIN_I2S_SCK         PIN_SERIAL4_TX
+#define PIN_I2S_FS          (33u)
+#define PIN_I2S_MCK			PIN_SERIAL4_RX
 
 //QSPI Pins
 #define PIN_QSPI_SCK	(89u)
