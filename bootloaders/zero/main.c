@@ -23,17 +23,34 @@
 #include "sam_ba_serial.h"
 #include "board_definitions.h"
 #include "board_driver_led.h"
+#include "board_driver_i2c.h"
+#include "board_driver_pmic.h"
+#include "board_driver_jtag.h"
 #include "sam_ba_usb.h"
 #include "sam_ba_cdc.h"
 
 extern uint32_t __sketch_vectors_ptr; // Exported value from linker script
 extern void board_init(void);
 
-#if (defined DEBUG) && (DEBUG == 1)
 volatile uint32_t* pulSketch_Start_Address;
-#endif
+
+static void jump_to_application(void) {
+
+  /* Rebase the Stack Pointer */
+  __set_MSP( (uint32_t)(__sketch_vectors_ptr) );
+
+  /* Rebase the vector table base address */
+  SCB->VTOR = ((uint32_t)(&__sketch_vectors_ptr) & SCB_VTOR_TBLOFF_Msk);
+
+  /* Jump to application Reset Handler in the application */
+  asm("bx %0"::"r"(*pulSketch_Start_Address));
+}
 
 static volatile bool main_b_cdc_enable = false;
+
+#ifdef CONFIGURE_PMIC
+static volatile bool jump_to_app = false;
+#endif
 
 /**
  * \brief Check the application startup condition
@@ -43,41 +60,6 @@ static void check_start_application(void)
 {
 //  LED_init();
 //  LED_off();
-
-#if defined(BOOT_DOUBLE_TAP_ADDRESS)
-  #define DOUBLE_TAP_MAGIC 0x07738135
-  if (PM->RCAUSE.bit.POR)
-  {
-    /* On power-on initialize double-tap */
-    BOOT_DOUBLE_TAP_DATA = 0;
-  }
-  else
-  {
-    if (BOOT_DOUBLE_TAP_DATA == DOUBLE_TAP_MAGIC)
-    {
-      /* Second tap, stay in bootloader */
-      BOOT_DOUBLE_TAP_DATA = 0;
-      return;
-    }
-
-    /* First tap */
-    BOOT_DOUBLE_TAP_DATA = DOUBLE_TAP_MAGIC;
-
-    /* Wait 0.5sec to see if the user tap reset again.
-     * The loop value is based on SAMD21 default 1MHz clock @ reset.
-     */
-    for (uint32_t i=0; i<125000; i++) /* 500ms */
-      /* force compiler to not optimize this... */
-      __asm__ __volatile__("");
-
-    /* Timeout happened, continue boot... */
-    BOOT_DOUBLE_TAP_DATA = 0;
-  }
-#endif
-
-#if (!defined DEBUG) || ((defined DEBUG) && (DEBUG == 0))
-uint32_t* pulSketch_Start_Address;
-#endif
 
   /*
    * Test sketch stack pointer @ &__sketch_vectors_ptr
@@ -108,6 +90,47 @@ uint32_t* pulSketch_Start_Address;
     return;
   }
 
+#if defined(BOOT_DOUBLE_TAP_ADDRESS)
+  #define DOUBLE_TAP_MAGIC 0x07738135
+  if (PM->RCAUSE.bit.POR)
+  {
+    /* On power-on initialize double-tap */
+    BOOT_DOUBLE_TAP_DATA = 0;
+  }
+  else
+  {
+    if (BOOT_DOUBLE_TAP_DATA == DOUBLE_TAP_MAGIC)
+    {
+      /* Second tap, stay in bootloader */
+      BOOT_DOUBLE_TAP_DATA = 0;
+      return;
+    }
+
+#ifdef HAS_EZ6301QI
+    // wait a tiny bit for the EZ6301QI to settle,
+    // as it's connected to RESETN and might reset
+    // the chip when the cable is plugged in fresh
+
+    for (uint32_t i=0; i<2500; i++) /* 10ms */
+      /* force compiler to not optimize this... */
+      __asm__ __volatile__("");
+#endif
+
+    /* First tap */
+    BOOT_DOUBLE_TAP_DATA = DOUBLE_TAP_MAGIC;
+
+    /* Wait 0.5sec to see if the user tap reset again.
+     * The loop value is based on SAMD21 default 1MHz clock @ reset.
+     */
+    for (uint32_t i=0; i<125000; i++) /* 500ms */
+      /* force compiler to not optimize this... */
+      __asm__ __volatile__("");
+
+    /* Timeout happened, continue boot... */
+    BOOT_DOUBLE_TAP_DATA = 0;
+  }
+#endif
+
 /*
 #if defined(BOOT_LOAD_PIN)
   volatile PortGroup *boot_port = (volatile PortGroup *)(&(PORT->Group[BOOT_LOAD_PIN / 32]));
@@ -130,15 +153,12 @@ uint32_t* pulSketch_Start_Address;
 */
 
 //  LED_on();
+#ifdef CONFIGURE_PMIC
+  jump_to_app = true;
+#else
+  jump_to_application();
+#endif
 
-  /* Rebase the Stack Pointer */
-  __set_MSP( (uint32_t)(__sketch_vectors_ptr) );
-
-  /* Rebase the vector table base address */
-  SCB->VTOR = ((uint32_t)(&__sketch_vectors_ptr) & SCB_VTOR_TBLOFF_Msk);
-
-  /* Jump to application Reset Handler in the application */
-  asm("bx %0"::"r"(*pulSketch_Start_Address));
 }
 
 #if DEBUG_ENABLE
@@ -155,7 +175,7 @@ uint32_t* pulSketch_Start_Address;
  */
 int main(void)
 {
-#if SAM_BA_INTERFACE == SAM_BA_USBCDC_ONLY  ||  SAM_BA_INTERFACE == SAM_BA_BOTH_INTERFACES
+#if defined(SAM_BA_USBCDC_ONLY)  ||  defined(SAM_BA_BOTH_INTERFACES)
   P_USB_CDC pCdc;
 #endif
   DEBUG_PIN_HIGH;
@@ -168,21 +188,58 @@ int main(void)
   board_init();
   __enable_irq();
 
-#if SAM_BA_INTERFACE == SAM_BA_UART_ONLY  ||  SAM_BA_INTERFACE == SAM_BA_BOTH_INTERFACES
+#ifdef CONFIGURE_PMIC
+  configure_pmic();
+#endif
+
+#ifdef ENABLE_JTAG_LOAD
+  uint32_t temp ;
+  // Get whole current setup for both odd and even pins and remove odd one
+  temp = (PORT->Group[0].PMUX[27 >> 1].reg) & PORT_PMUX_PMUXE( 0xF ) ;
+  // Set new muxing
+  PORT->Group[0].PMUX[27 >> 1].reg = temp|PORT_PMUX_PMUXO( 7 ) ;
+  // Enable port mux
+  PORT->Group[0].PINCFG[27].reg |= PORT_PINCFG_PMUXEN ;
+  clockout(0, 1);
+
+  jtagInit();
+  if ((jtagBitstreamVersion() & 0xFF000000) != 0xB0000000) {
+    // FPGA is not in the bootloader, restart it
+    jtagReload();    
+  }
+#endif
+
+#ifdef CONFIGURE_PMIC
+  if (jump_to_app == true) {
+    jump_to_application();
+  }
+#endif
+
+#if defined(SAM_BA_UART_ONLY)  ||  defined(SAM_BA_BOTH_INTERFACES)
   /* UART is enabled in all cases */
   serial_open();
 #endif
 
-#if SAM_BA_INTERFACE == SAM_BA_USBCDC_ONLY  ||  SAM_BA_INTERFACE == SAM_BA_BOTH_INTERFACES
+#if defined(SAM_BA_USBCDC_ONLY)  ||  defined(SAM_BA_BOTH_INTERFACES)
   pCdc = usb_init();
 #endif
 
   DEBUG_PIN_LOW;
 
+  /* Initialize LEDs */
+  LED_init();
+  LEDRX_init();
+  LEDRX_off();
+  LEDTX_init();
+  LEDTX_off();
+
+  /* Start the sys tick (1 ms) */
+  SysTick_Config(1000);
+
   /* Wait for a complete enum on usb or a '#' char on serial line */
   while (1)
   {
-#if SAM_BA_INTERFACE == SAM_BA_USBCDC_ONLY  ||  SAM_BA_INTERFACE == SAM_BA_BOTH_INTERFACES
+#if defined(SAM_BA_USBCDC_ONLY)  ||  defined(SAM_BA_BOTH_INTERFACES)
     if (pCdc->IsConfigured(pCdc) != 0)
     {
       main_b_cdc_enable = true;
@@ -200,7 +257,7 @@ int main(void)
     }
 #endif
 
-#if SAM_BA_INTERFACE == SAM_BA_UART_ONLY  ||  SAM_BA_INTERFACE == SAM_BA_BOTH_INTERFACES
+#if defined(SAM_BA_UART_ONLY)  ||  defined(SAM_BA_BOTH_INTERFACES)
     /* Check if a '#' has been received */
     if (!main_b_cdc_enable && serial_sharp_received())
     {
@@ -213,4 +270,11 @@ int main(void)
     }
 #endif
   }
+}
+
+void SysTick_Handler(void)
+{
+  LED_pulse();
+
+  sam_ba_monitor_sys_tick();
 }
